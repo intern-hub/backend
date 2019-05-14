@@ -8,7 +8,7 @@ public class Position {
     @GeneratedValue
     @Id
     @Column(name = "id")
-    private int id;
+    private long id;
     @Column(name = "link")
     private String link;
     @ManyToOne
@@ -32,11 +32,11 @@ public class Position {
         this.setCompany(new Company(companyName));
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
