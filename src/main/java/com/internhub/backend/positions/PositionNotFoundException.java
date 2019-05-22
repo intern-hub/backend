@@ -1,4 +1,4 @@
-package internhub;
+package com.internhub.backend.positions;
 
 public class PositionNotFoundException extends RuntimeException {
     public PositionNotFoundException(Long id) {

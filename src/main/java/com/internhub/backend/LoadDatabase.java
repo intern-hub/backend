@@ -1,5 +1,7 @@
-package internhub;
+package com.internhub.backend;
 
+import com.internhub.backend.companies.CompanyRepository;
+import com.internhub.backend.positions.PositionRepository;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.boot.CommandLineRunner;

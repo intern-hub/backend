@@ -1,9 +1,9 @@
-package internhub;
+package com.internhub.backend.models;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "POSITIONS")
+@Table(name = "positions")
 public class Position {
     @GeneratedValue
     @Id
@@ -12,7 +12,7 @@ public class Position {
     @Column(name = "link")
     private String link;
     @ManyToOne
-    @JoinColumn(name = "companyId")
+    @JoinColumn(name = "company_id")
     private Company company;
     @Column(name = "title")
     private String title;
@@ -25,12 +25,6 @@ public class Position {
     private String degree;
     @Column(name = "location")
     private String location;
-
-    public Position() {}
-
-    public Position(String companyName) {
-        this.setCompany(new Company(companyName));
-    }
 
     public long getId() {
         return id;

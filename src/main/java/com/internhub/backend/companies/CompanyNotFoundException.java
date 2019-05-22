@@ -1,4 +1,4 @@
-package internhub;
+package com.internhub.backend.companies;
 
 public class CompanyNotFoundException extends RuntimeException {
     public CompanyNotFoundException(Long id) {

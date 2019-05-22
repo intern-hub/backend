@@ -1,4 +1,4 @@
-package internhub;
+package com.internhub.backend.companies;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
