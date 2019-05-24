@@ -22,7 +22,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private UserRepository userRepository;
 
     private static final String[] PUBLIC_ROUTES = new String[] {
-            JWTConstants.SIGNUP_URL, "/api/companies/**", "/api/positions/**"
+            JWTConstants.SIGNUP_URL, "/api/companies/**",
+            "/api/positions/**", "/swagger-ui.html"
     };
 
     @Override
