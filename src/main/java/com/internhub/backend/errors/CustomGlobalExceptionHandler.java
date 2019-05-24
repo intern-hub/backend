@@ -1,12 +1,13 @@
 package com.internhub.backend.errors;
 
 
+import com.internhub.backend.applications.ApplicationAccessDeniedException;
+import com.internhub.backend.applications.ApplicationNotFoundException;
 import com.internhub.backend.auth.UserConflictException;
 import com.internhub.backend.companies.CompanyNotFoundException;
 import com.internhub.backend.positions.PositionNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -18,7 +19,8 @@ import java.time.LocalDateTime;
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
             CompanyNotFoundException.class,
-            PositionNotFoundException.class
+            PositionNotFoundException.class,
+            ApplicationNotFoundException.class
     })
     public ResponseEntity<CustomErrorResponse> handleNotFoundException(Exception ex, WebRequest request) {
         CustomErrorResponse errors = new CustomErrorResponse();
@@ -37,12 +39,12 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<CustomErrorResponse> handleAuthorizationException(Exception ex, WebRequest request) {
+    @ExceptionHandler(ApplicationAccessDeniedException.class)
+    public ResponseEntity<CustomErrorResponse> handleAccessDeniedException(Exception ex, WebRequest request) {
         CustomErrorResponse errors = new CustomErrorResponse();
         errors.setTimestamp(LocalDateTime.now());
         errors.setError(ex.getMessage());
-        errors.setStatus(HttpStatus.UNAUTHORIZED.value());
-        return new ResponseEntity<>(errors, HttpStatus.UNAUTHORIZED);
+        errors.setStatus(HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
     }
 }

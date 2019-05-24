@@ -17,28 +17,31 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
 
     private static final String[] PUBLIC_ROUTES = new String[] {
-            SecurityConstants.SIGNUP_URL, "/api/companies/**", "/api/positions/**"
+            JWTConstants.SIGNUP_URL, "/api/companies/**", "/api/positions/**"
     };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         final JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManager());
-        authenticationFilter.setFilterProcessesUrl(SecurityConstants.LOGIN_URL);
+        authenticationFilter.setFilterProcessesUrl(JWTConstants.LOGIN_URL);
+        final JWTAuthorizationFilter authorizationFilter = new JWTAuthorizationFilter(authenticationManager(), userRepository);
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(PUBLIC_ROUTES).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(authenticationFilter)
-                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                .addFilter(authorizationFilter)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Bean

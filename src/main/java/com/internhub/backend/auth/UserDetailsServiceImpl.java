@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -17,11 +18,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        List<User> users = repository.findByUsername(username);
-        if (users.isEmpty()) {
+        User user = repository.findByUsername(username);
+        if (user == null) {
             throw new UsernameNotFoundException(username);
         }
-        User user = users.get(0);
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(), user.getPassword(), Collections.emptyList());
     }

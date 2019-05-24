@@ -13,8 +13,8 @@ public class CompanyController {
     @GetMapping("/companies")
 	public @ResponseBody
     Iterable<Company> getCompanies(
-	        @RequestParam(name = "name", required = false) String name)
-    {
+	        @RequestParam(name = "name", required = false) String name
+    ) {
         if (name != null) {
             return repository.findByName(name);
         }
