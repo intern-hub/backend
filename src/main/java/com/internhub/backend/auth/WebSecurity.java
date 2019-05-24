@@ -2,7 +2,6 @@ package com.internhub.backend.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,20 +19,19 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Bean
-    public JWTAuthenticationFilter getJWTAuthenticationFilter() throws Exception {
-        final JWTAuthenticationFilter filter = new JWTAuthenticationFilter(authenticationManager());
-        filter.setFilterProcessesUrl(SecurityConstants.LOGIN_URL);
-        return filter;
-    }
+    private static final String[] PUBLIC_ROUTES = new String[] {
+            SecurityConstants.SIGNUP_URL, "/api/companies/**", "/api/positions/**"
+    };
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        final JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManager());
+        authenticationFilter.setFilterProcessesUrl(SecurityConstants.LOGIN_URL);
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST, SecurityConstants.SIGNUP_URL).permitAll()
+                .antMatchers(PUBLIC_ROUTES).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(getJWTAuthenticationFilter())
+                .addFilter(authenticationFilter)
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
