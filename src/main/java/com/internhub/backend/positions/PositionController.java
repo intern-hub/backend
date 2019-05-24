@@ -2,11 +2,10 @@ package com.internhub.backend.positions;
 
 import com.internhub.backend.models.Position;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/api") // Use /api as our base root; don't worry about versioning
+@RestController
+@RequestMapping("/api")
 public class PositionController {
 	@Autowired
 	private PositionRepository repository;
