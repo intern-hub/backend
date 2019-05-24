@@ -15,7 +15,7 @@ public class Application {
     @ManyToOne
     @JoinColumn(name = "position_id")
     private Position position;
-    @Column(name = "notes")
+    @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
     @Column(name = "applied")
     private boolean applied;
