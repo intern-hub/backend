@@ -30,10 +30,8 @@ public class CustomErrorController implements ErrorController {
 
         // Extract error message from the raw error attributes
         Map<String, Object> attributes = getErrorAttributes(webRequest);
-        String message = "An unknown error occurred";
-        if (attributes.containsKey("message"))
-            message = (String) attributes.get("message");
-        else if (attributes.containsKey("error"))
+        String message = "No message available";
+        if (attributes.containsKey("error"))
             message = (String) attributes.get("error");
 
         errors.setTimestamp(LocalDateTime.now());
