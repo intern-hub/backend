@@ -1,4 +1,4 @@
-package com.internhub.backend.companies;
+package com.internhub.backend.errors.exceptions;
 
 public class CompanyNotFoundException extends RuntimeException {
 

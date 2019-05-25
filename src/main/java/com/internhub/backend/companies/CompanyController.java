@@ -1,5 +1,6 @@
 package com.internhub.backend.companies;
 
+import com.internhub.backend.errors.exceptions.CompanyNotFoundException;
 import com.internhub.backend.models.Company;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

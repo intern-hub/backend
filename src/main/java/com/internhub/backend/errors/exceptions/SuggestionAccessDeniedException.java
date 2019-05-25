@@ -1,4 +1,4 @@
-package com.internhub.backend.suggestions;
+package com.internhub.backend.errors.exceptions;
 
 public class SuggestionAccessDeniedException extends RuntimeException {
 

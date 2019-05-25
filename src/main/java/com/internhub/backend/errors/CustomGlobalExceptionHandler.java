@@ -1,12 +1,7 @@
 package com.internhub.backend.errors;
 
 
-import com.internhub.backend.applications.ApplicationAccessDeniedException;
-import com.internhub.backend.applications.ApplicationNotFoundException;
-import com.internhub.backend.auth.UserConflictException;
-import com.internhub.backend.auth.UserMalformedException;
-import com.internhub.backend.companies.CompanyNotFoundException;
-import com.internhub.backend.positions.PositionNotFoundException;
+import com.internhub.backend.errors.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -19,9 +14,35 @@ import java.time.LocalDateTime;
 @ControllerAdvice
 public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({
+            ApplicationMalformedException.class,
+            SuggestionMalformedException.class,
+            UserMalformedException.class
+    })
+    public ResponseEntity<CustomErrorResponse> handleBadRequestException(Exception ex, WebRequest request) {
+        CustomErrorResponse errors = new CustomErrorResponse();
+        errors.setTimestamp(LocalDateTime.now());
+        errors.setError(ex.getMessage());
+        errors.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({
+            ApplicationAccessDeniedException.class,
+            SuggestionAccessDeniedException.class
+    })
+    public ResponseEntity<CustomErrorResponse> handleAccessDeniedException(Exception ex, WebRequest request) {
+        CustomErrorResponse errors = new CustomErrorResponse();
+        errors.setTimestamp(LocalDateTime.now());
+        errors.setError(ex.getMessage());
+        errors.setStatus(HttpStatus.FORBIDDEN.value());
+        return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler({
+            ApplicationNotFoundException.class,
+            SuggestionNotFoundException.class,
             CompanyNotFoundException.class,
-            PositionNotFoundException.class,
-            ApplicationNotFoundException.class
+            PositionNotFoundException.class
     })
     public ResponseEntity<CustomErrorResponse> handleNotFoundException(Exception ex, WebRequest request) {
         CustomErrorResponse errors = new CustomErrorResponse();
@@ -31,30 +52,15 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         return new ResponseEntity<>(errors, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(UserConflictException.class)
+    @ExceptionHandler({
+            ApplicationConflictException.class,
+            UserConflictException.class
+    })
     public ResponseEntity<CustomErrorResponse> handleConflictException(Exception ex, WebRequest request) {
         CustomErrorResponse errors = new CustomErrorResponse();
         errors.setTimestamp(LocalDateTime.now());
         errors.setError(ex.getMessage());
         errors.setStatus(HttpStatus.CONFLICT.value());
         return new ResponseEntity<>(errors, HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler(ApplicationAccessDeniedException.class)
-    public ResponseEntity<CustomErrorResponse> handleAccessDeniedException(Exception ex, WebRequest request) {
-        CustomErrorResponse errors = new CustomErrorResponse();
-        errors.setTimestamp(LocalDateTime.now());
-        errors.setError(ex.getMessage());
-        errors.setStatus(HttpStatus.FORBIDDEN.value());
-        return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
-    }
-
-    @ExceptionHandler(UserMalformedException.class)
-    public ResponseEntity<CustomErrorResponse> handleBadRequestException(Exception ex, WebRequest request) {
-        CustomErrorResponse errors = new CustomErrorResponse();
-        errors.setTimestamp(LocalDateTime.now());
-        errors.setError(ex.getMessage());
-        errors.setStatus(HttpStatus.BAD_REQUEST.value());
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }

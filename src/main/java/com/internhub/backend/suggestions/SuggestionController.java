@@ -1,6 +1,9 @@
 package com.internhub.backend.suggestions;
 
 import com.internhub.backend.auth.UserRepository;
+import com.internhub.backend.errors.exceptions.SuggestionAccessDeniedException;
+import com.internhub.backend.errors.exceptions.SuggestionMalformedException;
+import com.internhub.backend.errors.exceptions.SuggestionNotFoundException;
 import com.internhub.backend.models.Suggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,39 +40,34 @@ public class SuggestionController {
 
     @PostMapping("/suggestions")
     void createSuggestion(@RequestBody Suggestion suggestion, Principal principal) {
+        if (suggestion.getContent() == null) {
+            throw new SuggestionMalformedException();
+        }
         String username = principal.getName();
         suggestion.setUser(userRepository.findByUsername(username));
         suggestionRepository.save(suggestion);
     }
 
-    /*
-    @PutMapping("/positions/{id}")
-    Position replacePosition(@RequestBody Position newPosition, @PathVariable Long id) {
-
-        return repository.findById(id)
-            .map(position -> {
-                position.setLink(newPosition.getLink());
-                position.setCompany(newPosition.getCompany());
-                position.setTitle(newPosition.getTitle());
-                position.setSeason(newPosition.getSeason());
-                position.setYear(newPosition.getYear());
-                position.setDegree(newPosition.getDegree());
-                position.setLocation(newPosition.getLocation());
-                return repository.save(position);
-            })
-            .orElseGet(() -> {
-                newPosition.setId(id);
-                return repository.save(newPosition);
-            });
+    @PutMapping("/suggestions/{id}")
+    void updateSuggestion(@RequestBody Suggestion suggestionUpdates, @PathVariable Long id, Principal principal) {
+        String username = principal.getName();
+        Suggestion suggestion = suggestionRepository.findById(id)
+                .orElseThrow(() -> new SuggestionNotFoundException(id));
+        if (!suggestion.getUser().getUsername().equals(username)) {
+            throw new SuggestionAccessDeniedException(id);
+        }
+        // NOTE: The user field of an suggestion is immutable
+        if (suggestionUpdates.getContent() != null)
+            suggestion.setContent(suggestionUpdates.getContent());
+        suggestionRepository.save(suggestion);
     }
-     */
 
     @DeleteMapping("/suggestions/{id}")
     void deleteSuggestion(@PathVariable Long id, Principal principal) {
         String username = principal.getName();
-        Suggestion application = suggestionRepository.findById(id)
+        Suggestion suggestion = suggestionRepository.findById(id)
                 .orElseThrow(() -> new SuggestionNotFoundException(id));
-        if (!application.getUser().getUsername().equals(username)) {
+        if (!suggestion.getUser().getUsername().equals(username)) {
             throw new SuggestionAccessDeniedException(id);
         }
         suggestionRepository.deleteById(id);

@@ -1,5 +1,6 @@
 package com.internhub.backend.positions;
 
+import com.internhub.backend.errors.exceptions.PositionNotFoundException;
 import com.internhub.backend.models.Position;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

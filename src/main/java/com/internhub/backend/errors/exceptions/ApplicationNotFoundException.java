@@ -1,4 +1,4 @@
-package com.internhub.backend.applications;
+package com.internhub.backend.errors.exceptions;
 
 public class ApplicationNotFoundException extends RuntimeException {
 

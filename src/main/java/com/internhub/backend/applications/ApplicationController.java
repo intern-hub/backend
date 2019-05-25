@@ -1,7 +1,16 @@
 package com.internhub.backend.applications;
 
 import com.internhub.backend.auth.UserRepository;
+import com.internhub.backend.companies.CompanyRepository;
+import com.internhub.backend.errors.exceptions.ApplicationAccessDeniedException;
+import com.internhub.backend.errors.exceptions.ApplicationConflictException;
+import com.internhub.backend.errors.exceptions.ApplicationMalformedException;
+import com.internhub.backend.errors.exceptions.ApplicationNotFoundException;
 import com.internhub.backend.models.Application;
+import com.internhub.backend.models.Company;
+import com.internhub.backend.models.Position;
+import com.internhub.backend.errors.exceptions.PositionNotFoundException;
+import com.internhub.backend.positions.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +24,10 @@ public class ApplicationController {
     private ApplicationRepository applicationRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
+    @Autowired
+    private PositionRepository positionRepository;
 
     @GetMapping("/applications")
     @ResponseBody
@@ -41,49 +54,96 @@ public class ApplicationController {
         String username = principal.getName();
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException(id));
-        if (!application.getUser().getUsername().equals(username)) {
+        if (!application.getUser().getUsername().equals(username))
             throw new ApplicationAccessDeniedException(id);
-        }
         return application;
     }
 
     @PostMapping("/applications")
     void createApplication(@RequestBody Application application, Principal principal) {
         String username = principal.getName();
+
+        // Application must include required fields
+        if (application.getPosition() == null)
+            throw new ApplicationMalformedException();
+
+        // Application has optional fields filled in with default values
+        if (application.getNotes() == null)
+            application.setNotes("");
+        if (application.isApplied() == null)
+            application.setApplied(false);
+        if (application.isBroken() == null)
+            application.setBroken(false);
+
+        // Check that the application references a valid position
+        Position position = application.getPosition();
+        Long positionId = position.getId();
+        if (!positionRepository.existsById(positionId)) {
+            throw new PositionNotFoundException(positionId);
+        }
+
+        // Check that the given user does not have any applications corresponding to
+        // this position's application (applications should be unique to (user, position))
+        if (!applicationRepository.findByUserUsernameAndPositionId(username, positionId).isEmpty()) {
+            throw new ApplicationConflictException(username, positionId);
+        }
+
+        // Increment the target company's popularity if on creation, we have applied to that company
+        Company company = application.getPosition().getCompany();
+        if (application.isApplied()) {
+            company.setPopularity(company.getPopularity() + 1);
+            companyRepository.save(company);
+        }
+
         application.setUser(userRepository.findByUsername(username));
         applicationRepository.save(application);
     }
 
-    /*
-    @PutMapping("/positions/{id}")
-    Position replacePosition(@RequestBody Position newPosition, @PathVariable Long id) {
+    @PutMapping("/applications/{id}")
+    void updateApplication(@RequestBody Application applicationUpdates, @PathVariable Long id, Principal principal) {
+        String username = principal.getName();
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ApplicationNotFoundException(id));
+        if (!application.getUser().getUsername().equals(username))
+            throw new ApplicationAccessDeniedException(id);
 
-        return repository.findById(id)
-            .map(position -> {
-                position.setLink(newPosition.getLink());
-                position.setCompany(newPosition.getCompany());
-                position.setTitle(newPosition.getTitle());
-                position.setSeason(newPosition.getSeason());
-                position.setYear(newPosition.getYear());
-                position.setDegree(newPosition.getDegree());
-                position.setLocation(newPosition.getLocation());
-                return repository.save(position);
-            })
-            .orElseGet(() -> {
-                newPosition.setId(id);
-                return repository.save(newPosition);
-            });
+        // Increment or decrement the target company's popularity if
+        // we changing the application's applied status
+        Company company = application.getPosition().getCompany();
+        if (applicationUpdates.isApplied() != null && application.isApplied() != applicationUpdates.isApplied()) {
+            if (applicationUpdates.isApplied())
+                company.setPopularity(company.getPopularity() + 1);
+            else
+                company.setPopularity(company.getPopularity() - 1);
+            companyRepository.save(company);
+        }
+
+        // NOTE: The user and position fields of an application are immutable
+        if (applicationUpdates.getNotes() != null)
+            application.setNotes(applicationUpdates.getNotes());
+        if (applicationUpdates.isApplied() != null)
+            application.setApplied(applicationUpdates.isApplied());
+        if (applicationUpdates.isBroken() != null)
+            application.setBroken(applicationUpdates.isBroken());
+        applicationRepository.save(application);
     }
-     */
 
     @DeleteMapping("/applications/{id}")
     void deleteApplication(@PathVariable Long id, Principal principal) {
         String username = principal.getName();
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException(id));
-        if (!application.getUser().getUsername().equals(username)) {
+        if (!application.getUser().getUsername().equals(username))
             throw new ApplicationAccessDeniedException(id);
+
+        // Decrement the target's company popularity if deleted application
+        // was marked as having applied
+        Company company = application.getPosition().getCompany();
+        if (application.isApplied()) {
+            company.setPopularity(company.getPopularity() - 1);
+            companyRepository.save(company);
         }
+
         applicationRepository.deleteById(id);
     }
 }

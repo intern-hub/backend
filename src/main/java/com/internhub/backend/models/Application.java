@@ -8,7 +8,7 @@ public class Application {
     @GeneratedValue
     @Id
     @Column(name = "id")
-    private long id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -18,15 +18,15 @@ public class Application {
     @Column(name = "notes", columnDefinition = "TEXT")
     private String notes;
     @Column(name = "applied")
-    private boolean applied;
+    private Boolean applied;
     @Column(name = "broken")
-    private boolean broken;
+    private Boolean broken;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -54,19 +54,19 @@ public class Application {
         this.notes = notes;
     }
 
-    public boolean isApplied() {
+    public Boolean isApplied() {
         return applied;
     }
 
-    public void setApplied(boolean applied) {
+    public void setApplied(Boolean applied) {
         this.applied = applied;
     }
 
-    public boolean isBroken() {
+    public Boolean isBroken() {
         return broken;
     }
 
-    public void setBroken(boolean broken) {
+    public void setBroken(Boolean broken) {
         this.broken = broken;
     }
 }

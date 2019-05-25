@@ -8,7 +8,7 @@ public class User {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private long id;
+    private Long id;
     @Column(name = "username")
     private String username;
     @Column(name = "password")
@@ -16,11 +16,11 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

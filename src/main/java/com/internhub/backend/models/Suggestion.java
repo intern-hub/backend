@@ -8,7 +8,7 @@ public class Suggestion {
     @GeneratedValue
     @Id
     @Column(name = "id")
-    private long id;
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

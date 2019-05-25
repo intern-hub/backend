@@ -1,4 +1,4 @@
-package com.internhub.backend.auth;
+package com.internhub.backend.errors.exceptions;
 
 public class UserConflictException extends RuntimeException {
     public UserConflictException(String username) {
