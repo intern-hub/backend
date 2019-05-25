@@ -31,9 +31,10 @@ public class CustomErrorController implements ErrorController {
         // Extract error message from the raw error attributes
         Map<String, Object> attributes = getErrorAttributes(webRequest);
         String message = "No message available";
-        if (attributes.containsKey("error"))
+        if (attributes.containsKey("message"))
+            message = (String) attributes.get("message");
+        else if (attributes.containsKey("error"))
             message = (String) attributes.get("error");
-
         errors.setTimestamp(LocalDateTime.now());
         errors.setError(message);
         errors.setStatus(response.getStatus());

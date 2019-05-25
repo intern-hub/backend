@@ -4,6 +4,8 @@ import com.internhub.backend.models.Company;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class CompanyController {
@@ -12,11 +14,11 @@ public class CompanyController {
 
     @GetMapping("/companies")
 	public @ResponseBody
-    Iterable<Company> getCompanies(
-	        @RequestParam(name = "name", required = false) String name
+    List<Company> getCompanies(
+	        @RequestParam(name = "coname", required = false) String companyName
     ) {
-        if (name != null) {
-            return repository.findByName(name);
+        if (companyName != null) {
+            return repository.findByName(companyName);
         }
 		return repository.findAll();
 	}

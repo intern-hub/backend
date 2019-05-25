@@ -4,6 +4,8 @@ import com.internhub.backend.models.Position;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class PositionController {
@@ -11,7 +13,8 @@ public class PositionController {
 	private PositionRepository repository;
 
     @GetMapping("/positions")
-	public @ResponseBody Iterable<Position> getPositions(
+	public @ResponseBody
+    List<Position> getPositions(
             @RequestParam(name = "coname", required = false) String companyName
     ) {
         if (companyName != null) {

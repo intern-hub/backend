@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.internhub.backend.models.User;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,15 +29,18 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
         try {
-            User creds = new ObjectMapper().readValue(request.getInputStream(), User.class);
+            if (!request.getMethod().equals("POST")) {
+                throw new AuthenticationMethodMismatchException(request.getMethod());
+            }
+            User credentials = new ObjectMapper().readValue(request.getInputStream(), User.class);
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            creds.getUsername(),
-                            creds.getPassword(),
+                            credentials.getUsername(),
+                            credentials.getPassword(),
                             new ArrayList<>())
             );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (IOException ex) {
+            throw new AuthenticationCredentialsNotFoundException("Unable to extract credentials");
         }
     }
 
@@ -52,5 +56,22 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().write(String.format("{\"token\":\"%s\"}", token));
         response.getWriter().flush();
         response.getWriter().close();
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              AuthenticationException ex) throws IOException, ServletException {
+        if (ex instanceof AuthenticationMethodMismatchException) {
+            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, ex.getMessage());
+        }
+        else {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+        }
+    }
+
+    class AuthenticationMethodMismatchException extends AuthenticationException {
+        public AuthenticationMethodMismatchException(String method) {
+            super(method + " is not allowed");
+        }
     }
 }

@@ -21,9 +21,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserRepository userRepository;
 
-    private static final String[] PUBLIC_ROUTES = new String[] {
-            JWTConstants.SIGNUP_URL, "/api/companies/**",
-            "/api/positions/**", "/swagger-ui.html"
+    private static final String[] PRIVATE_ROUTES = new String[] {
+            "/api/applications/**", "/api/suggestions/**"
     };
 
     @Override
@@ -32,8 +31,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         authenticationFilter.setFilterProcessesUrl(JWTConstants.LOGIN_URL);
         final JWTAuthorizationFilter authorizationFilter = new JWTAuthorizationFilter(authenticationManager(), userRepository);
         http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(PUBLIC_ROUTES).permitAll()
-                .anyRequest().authenticated()
+                .antMatchers(PRIVATE_ROUTES).authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .addFilter(authenticationFilter)
                 .addFilter(authorizationFilter)

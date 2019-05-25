@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -13,7 +14,8 @@ public class ApplicationController {
     private ApplicationRepository repository;
 
     @GetMapping("/applications")
-    public @ResponseBody Iterable<Application> getApplications(
+    public @ResponseBody
+    List<Application> getApplications(
             @RequestParam(name = "coname", required = false) String companyName,
             Principal principal
     ) {
