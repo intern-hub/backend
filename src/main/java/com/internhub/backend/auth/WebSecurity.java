@@ -22,7 +22,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private UserRepository userRepository;
 
     private static final String[] PRIVATE_ROUTES = new String[] {
-            "/api/applications/**", "/api/suggestions/**"
+            "/api/applications/**", "/api/suggestions/**", "/api/auth/me"
     };
 
     @Override

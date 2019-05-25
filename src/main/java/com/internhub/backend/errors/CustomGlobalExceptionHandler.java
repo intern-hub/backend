@@ -4,6 +4,7 @@ package com.internhub.backend.errors;
 import com.internhub.backend.applications.ApplicationAccessDeniedException;
 import com.internhub.backend.applications.ApplicationNotFoundException;
 import com.internhub.backend.auth.UserConflictException;
+import com.internhub.backend.auth.UserMalformedException;
 import com.internhub.backend.companies.CompanyNotFoundException;
 import com.internhub.backend.positions.PositionNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -46,5 +47,14 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
         errors.setError(ex.getMessage());
         errors.setStatus(HttpStatus.FORBIDDEN.value());
         return new ResponseEntity<>(errors, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(UserMalformedException.class)
+    public ResponseEntity<CustomErrorResponse> handleBadRequestException(Exception ex, WebRequest request) {
+        CustomErrorResponse errors = new CustomErrorResponse();
+        errors.setTimestamp(LocalDateTime.now());
+        errors.setError(ex.getMessage());
+        errors.setStatus(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 }

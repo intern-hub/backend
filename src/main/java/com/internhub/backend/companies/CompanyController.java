@@ -24,6 +24,7 @@ public class CompanyController {
 	}
 
     @GetMapping("/companies/{id}")
+    @ResponseBody
     Company getCompany(@PathVariable Long id) {
         return repository.findById(id).orElseThrow(() -> new CompanyNotFoundException(id));
     }

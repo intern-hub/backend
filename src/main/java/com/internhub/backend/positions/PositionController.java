@@ -24,6 +24,7 @@ public class PositionController {
 	}
 
     @GetMapping("/positions/{id}")
+    @ResponseBody
     Position getPosition(@PathVariable Long id) {
         return repository.findById(id).orElseThrow(() -> new PositionNotFoundException(id));
     }

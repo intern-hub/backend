@@ -36,6 +36,7 @@ public class ApplicationController {
     }
 
     @GetMapping("/applications/{id}")
+    @ResponseBody
     Application getApplication(@PathVariable Long id, Principal principal) {
         String username = principal.getName();
         Application application = applicationRepository.findById(id)
@@ -47,11 +48,10 @@ public class ApplicationController {
     }
 
     @PostMapping("/applications")
-    Success createApplication(@RequestBody Application application, Principal principal) {
+    void createApplication(@RequestBody Application application, Principal principal) {
         String username = principal.getName();
         application.setUser(userRepository.findByUsername(username));
         applicationRepository.save(application);
-        return new Success();
     }
 
     /*
@@ -77,21 +77,13 @@ public class ApplicationController {
      */
 
     @DeleteMapping("/applications/{id}")
-    Success deleteApplication(@PathVariable Long id, Principal principal) {
+    void deleteApplication(@PathVariable Long id, Principal principal) {
         String username = principal.getName();
         Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException(id));
-        if (application.getUser().getUsername().equals(username)) {
-            applicationRepository.deleteById(id);
+        if (!application.getUser().getUsername().equals(username)) {
+            throw new ApplicationAccessDeniedException(id);
         }
-        return new Success();
-    }
-}
-
-class Success {
-    private boolean success;
-
-    public Success() {
-        this.success = true;
+        applicationRepository.deleteById(id);
     }
 }
