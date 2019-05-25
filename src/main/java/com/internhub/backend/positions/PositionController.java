@@ -13,7 +13,7 @@ public class PositionController {
 	private PositionRepository repository;
 
     @GetMapping("/positions")
-	public @ResponseBody
+	@ResponseBody
     List<Position> getPositions(
             @RequestParam(name = "coname", required = false) String companyName
     ) {

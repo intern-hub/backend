@@ -1,5 +1,6 @@
 package com.internhub.backend.applications;
 
+import com.internhub.backend.auth.UserRepository;
 import com.internhub.backend.models.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +12,12 @@ import java.util.List;
 @RequestMapping("/api")
 public class ApplicationController {
     @Autowired
-    private ApplicationRepository repository;
+    private ApplicationRepository applicationRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/applications")
-    public @ResponseBody
+    @ResponseBody
     List<Application> getApplications(
             @RequestParam(name = "coname", required = false) String companyName,
             Principal principal
@@ -27,15 +30,15 @@ public class ApplicationController {
              *  If it doesn't, find all positions associated with the company and then
              *  use the findByUsernameAndPositionId() method instead
              */
-            return repository.findByUserUsernameAndPositionCompanyName(username, companyName);
+            return applicationRepository.findByUserUsernameAndPositionCompanyName(username, companyName);
         }
-        return repository.findByUserUsername(username);
+        return applicationRepository.findByUserUsername(username);
     }
 
     @GetMapping("/applications/{id}")
     Application getApplication(@PathVariable Long id, Principal principal) {
         String username = principal.getName();
-        Application application = repository.findById(id)
+        Application application = applicationRepository.findById(id)
                 .orElseThrow(() -> new ApplicationNotFoundException(id));
         if (!application.getUser().getUsername().equals(username)) {
             throw new ApplicationAccessDeniedException(id);
@@ -43,13 +46,15 @@ public class ApplicationController {
         return application;
     }
 
-    /*
     @PostMapping("/applications")
-    public @ResponseBody String newPosition(@RequestBody Position newPosition) {
-        repository.save(newPosition);
-        return "good job you saved";
+    Success createApplication(@RequestBody Application application, Principal principal) {
+        String username = principal.getName();
+        application.setUser(userRepository.findByUsername(username));
+        applicationRepository.save(application);
+        return new Success();
     }
 
+    /*
     @PutMapping("/positions/{id}")
     Position replacePosition(@RequestBody Position newPosition, @PathVariable Long id) {
 
@@ -69,10 +74,24 @@ public class ApplicationController {
                 return repository.save(newPosition);
             });
     }
+     */
 
-    @DeleteMapping("/positions/{id}")
-    void deleteCompany(@PathVariable Long id) {
-        repository.deleteById(id);
+    @DeleteMapping("/applications/{id}")
+    Success deleteApplication(@PathVariable Long id, Principal principal) {
+        String username = principal.getName();
+        Application application = applicationRepository.findById(id)
+                .orElseThrow(() -> new ApplicationNotFoundException(id));
+        if (application.getUser().getUsername().equals(username)) {
+            applicationRepository.deleteById(id);
+        }
+        return new Success();
     }
-    */
+}
+
+class Success {
+    private boolean success;
+
+    public Success() {
+        this.success = true;
+    }
 }

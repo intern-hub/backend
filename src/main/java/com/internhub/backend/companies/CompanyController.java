@@ -13,7 +13,7 @@ public class CompanyController {
 	private CompanyRepository repository;
 
     @GetMapping("/companies")
-	public @ResponseBody
+	@ResponseBody
     List<Company> getCompanies(
 	        @RequestParam(name = "coname", required = false) String companyName
     ) {
