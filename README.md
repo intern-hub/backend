@@ -14,6 +14,8 @@ POST, PUT, GET, and DELETE are all supported operations.
 
 **NOTE**: If a route is labeled as authenticated, this means that any requests without a proper Authorization header will be refused. The contents of a valid authorization header looks like: `Bearer {token}`, where {token} should be replaced with the JWT token received after POSTing to `/api/auth/login` with vaild credentials.
 
+-------------------------------------------------------------
+
 ### Companies
 
 `GET /api/companies` **PUBLIC**
@@ -30,6 +32,8 @@ POST, PUT, GET, and DELETE are all supported operations.
 | Response Body | Returns a list of companies whose name matches the given coname query parameter. Since company names are unique, this will either be a list of one company (indicating a match) or a list of zero companies (indicating failure). |
 | Status Code | Always 200. |
 
+-------------------------------------------------------------
+
 ### Positions
 
 `GET /api/positions?coname={name}` **PUBLIC**
@@ -38,6 +42,8 @@ POST, PUT, GET, and DELETE are all supported operations.
 | ------------- | ------------- |
 | Response Body | Returns a list of positions whose company name matches the given coname query parameter. Could be empty if a company does not have any positions available or the company does not exist. | 
 | Status Code | Always 200. |
+
+-------------------------------------------------------------
 
 ### Authentication
 
@@ -64,6 +70,8 @@ POST, PUT, GET, and DELETE are all supported operations.
 | Response Body | Will return the user object corresponding to the JWT token specified in the Authorization header of the request. Password field will be omitted. | 
 | Status Code | 403 if not authenticated. 200 otherwise. | 
 
+-------------------------------------------------------------
+
 ### Applications
 
 `GET /api/applications?coname={name}` **AUTHENTICATED**
@@ -89,6 +97,8 @@ POST, PUT, GET, and DELETE are all supported operations.
 | Response Body | | 
 | Status Code | | 
 
+-------------------------------------------------------------
+
 ### Suggestions
 
 `POST /api/suggestions` **AUTHENTICATED**
@@ -98,3 +108,5 @@ POST, PUT, GET, and DELETE are all supported operations.
 | Request Body | |
 | Response Body | | 
 | Status Code | | 
+
+-------------------------------------------------------------
