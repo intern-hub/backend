@@ -10,6 +10,18 @@ There is already a MySQL server running on AWS.
 Run `./gradlew bootRun` to connect to the server.
 POST, PUT, GET, and DELETE are all supported operations.
 
+## Authentication Documentation
+
+We subscribe to a simplified version of the typical JWT-based authentication process. JWT stands for "JSON Web Token", and a typical JWT contains three parts: a subject, an expiration date, and a secret signed by the backend server. The subject, in our case, will be the person's username. Our tokens do not have an expiration date; they last forever to get rid of the refresh process. The secret is used by the backend to ensure that the token is not forged. Our authentication progress from new user signup to finish looks like this:
+
+1. For new users, first execute `POST /api/auth/signup` with the body being a JSON document containing `username`, `password`, and `email` fields. If response status is 200, then signup was a success and your credentials are now in the system. You must log in now.
+2. For the login process, execute `POST /api/auth/login` with the body containing the `username` and `password` fields submitted earlier. If response status is 200, you will receive a JSON object containing a `token` field. The contents of the `token` field are **the JWT token**. Save this to JS Local Storage; you will need it for future requests.
+3. Whenever you make a request to an authenticated URL, you will need to add an `Authorization` header with the contents being `Bearer {token}`. Replace {token} with the JWT token fetched earlier. This will identify you to the server, and the server will automatically fill in any user components needed for these request bodies.
+4. If you ever need any user information corresponding to a JWT token, you can always execute `GET /api/auth/me` with the `Authorization` header intact. The response will be the user object you submitted on signup, omitting the password (which has been hashed and stored securely).
+5. On logout, simply remove the JWT token from Local Storage. On login again, start at #2.
+
+Please see below, specifically the Authentication section, for more detailed descriptions of the authentication API routes.
+
 ## API Documentation 
 
 **NOTE**: If a route is labeled as authenticated, this means that any requests without a proper Authorization header will be refused. The contents of a valid authorization header looks like: `Bearer {token}`, where {token} should be replaced with the JWT token received after POSTing to `/api/auth/login` with vaild credentials.
