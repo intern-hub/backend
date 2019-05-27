@@ -17,12 +17,14 @@ POST, PUT, GET, and DELETE are all supported operations.
 ### Companies
 
 `GET /api/companies` **PUBLIC**
+
 | Component | Description |
 | ------------- | ------------- |
 | Response Body | Always returns a list of all companies present in the system.  |
 | Status Code | Always 200. |
 
 `GET /api/companies?coname={name}` **PUBLIC**
+
 | Component | Description |
 | ------------- | ------------- |
 | Response Body | Returns a list of companies whose name matches the given coname query parameter. Since company names are unique, this will either be a list of one company (indicating a match) or a list of zero companies (indicating failure). |
@@ -31,6 +33,7 @@ POST, PUT, GET, and DELETE are all supported operations.
 ### Positions
 
 `GET /api/positions?coname={name}` **PUBLIC**
+
 | Component | Description |
 | ------------- | ------------- |
 | Response Body | Returns a list of positions whose company name matches the given coname query parameter. Could be empty if a company does not have any positions available or the company does not exist. | 
@@ -39,6 +42,7 @@ POST, PUT, GET, and DELETE are all supported operations.
 ### Authentication
 
 `POST /api/auth/signup` **PUBLIC**
+
 | Component | Description |
 | ------------- | ------------- |
 | Request Body | | 
@@ -46,6 +50,7 @@ POST, PUT, GET, and DELETE are all supported operations.
 | Status Code | 400 if either required fields aren't present. 409 if user already exists. 200 if signup was a success. |
 
 `POST /api/auth/login` **PUBLIC**
+
 | Component | Description |
 | ------------- | ------------- |
 | Request Body | | 
@@ -53,6 +58,7 @@ POST, PUT, GET, and DELETE are all supported operations.
 | Status Code | | 
 
 `GET /api/auth/me` **AUTHENTICATED**
+
 | Component | Description |
 | ------------- | ------------- |
 | Response Body | | 
@@ -61,12 +67,14 @@ POST, PUT, GET, and DELETE are all supported operations.
 ### Applications
 
 `GET /api/applications?coname={name}` **AUTHENTICATED**
+
 | Component | Description |
 | ------------- | ------------- |
 | Response Body | | 
 | Status Code | | 
 
 `POST /api/applications` **AUTHENTICATED**
+
 | Component | Description |
 | ------------- | ------------- |
 | Request Body | |
@@ -74,6 +82,7 @@ POST, PUT, GET, and DELETE are all supported operations.
 | Status Code | | 
 
 `PUT /api/applications/{id}` **AUTHENTICATED**
+
 | Component | Description |
 | ------------- | ------------- |
 | Request Body | |
@@ -83,6 +92,7 @@ POST, PUT, GET, and DELETE are all supported operations.
 ### Suggestions
 
 `POST /api/suggestions` **AUTHENTICATED**
+
 | Component | Description |
 | ------------- | ------------- |
 | Request Body | |
