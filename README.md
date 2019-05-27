@@ -1,6 +1,8 @@
 # Backend for InternHub
 
-_Please see https://internhub.us.to for a live demonstration. Swagger documentation can be found at https://internhub.us.to/swagger-ui.html._
+_Please see https://internhub.us.to for a live demonstration._
+<br/>
+_Swagger documentation can be found at https://internhub.us.to/swagger-ui.html._
 
 This server will run on port 5000.
 
