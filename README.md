@@ -45,16 +45,16 @@ POST, PUT, GET, and DELETE are all supported operations.
 
 | Component | Description |
 | ------------- | ------------- |
-| Request Body | | 
-| Response Body | | 
+| Request Body | `{ "username": "USERNAME", "password": "PLAINTEXT PASSWORD", "email": "EMAIL" }` | 
+| Response Body | No body on success. Typical error JSON body otherwise. | 
 | Status Code | 400 if JSON body is malformed or a required field isn't present. 409 if user already exists. 200 if signup was a success. |
 
 `POST /api/auth/login` **PUBLIC**
 
 | Component | Description |
 | ------------- | ------------- |
-| Request Body | | 
-| Response Body | | 
+| Request Body | `{ "username": "USERNAME", "password": "PLAINTEXT PASSWORD" }` | 
+| Response Body | `{ "token": "JWT TOKEN" }` on success. Typical error JSON body otherwise. | 
 | Status Code | 400 if JSON body is malformed. 401 if authentication fails (i.e missing or bad credentials). | 
 
 `GET /api/auth/me` **AUTHENTICATED**
