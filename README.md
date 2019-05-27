@@ -47,7 +47,7 @@ POST, PUT, GET, and DELETE are all supported operations.
 | ------------- | ------------- |
 | Request Body | | 
 | Response Body | | 
-| Status Code | 400 if either required fields aren't present. 409 if user already exists. 200 if signup was a success. |
+| Status Code | 400 if JSON body is malformed or a required field isn't present. 409 if user already exists. 200 if signup was a success. |
 
 `POST /api/auth/login` **PUBLIC**
 
@@ -55,14 +55,14 @@ POST, PUT, GET, and DELETE are all supported operations.
 | ------------- | ------------- |
 | Request Body | | 
 | Response Body | | 
-| Status Code | | 
+| Status Code | 400 if JSON body is malformed. 401 if authentication fails (i.e missing or bad credentials). | 
 
 `GET /api/auth/me` **AUTHENTICATED**
 
 | Component | Description |
 | ------------- | ------------- |
-| Response Body | | 
-| Status Code | | 
+| Response Body | Will return the user object corresponding to the JWT token specified in the Authorization header of the request. Password field will be omitted. | 
+| Status Code | 403 if not authenticated. 200 otherwise. | 
 
 ### Applications
 
