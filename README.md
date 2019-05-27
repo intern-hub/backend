@@ -12,6 +12,8 @@ POST, PUT, GET, and DELETE are all supported operations.
 
 ## API Documentation 
 
+**NOTE**: If a route is labeled as authenticated, this means that any requests without a proper Authorization header will be refused. The contents of a valid authorization header looks like: `Bearer {token}`, where {token} should be replaced with the JWT token received after POSTing to `/api/auth/login` with vaild credentials.
+
 ### Companies
 
 `GET /api/companies` **PUBLIC**
@@ -30,12 +32,9 @@ POST, PUT, GET, and DELETE are all supported operations.
 
 ### Authentication
 
-`GET /api/auth/me` **AUTHENTICATED**
-<br/>
 `POST /api/auth/signup` **PUBLIC**
-<br/>
 `POST /api/auth/login` **PUBLIC**
-<br/>
+`GET /api/auth/me` **AUTHENTICATED**
 
 ### Applications
 
