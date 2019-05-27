@@ -15,18 +15,18 @@ POST, PUT, GET, and DELETE are all supported operations.
 ### Companies
 
 `GET /api/companies` **PUBLIC**
-    * Body: always returns a list of all companies present in the system.
-    * Status Code: always 200.
+* Body: always returns a list of all companies present in the system.
+* Status Code: always 200.
 
 `GET /api/companies?coname={name}` **PUBLIC**
-    * Body: returns a list of companies whose name matches the given coname query parameter. Since company names are unique, this will either be a list of one company (indicating a match) or a list of zero companies (indicating failure).
-    * Status Code: always 200.
+* Body: returns a list of companies whose name matches the given coname query parameter. Since company names are unique, this will either be a list of one company (indicating a match) or a list of zero companies (indicating failure).
+* Status Code: always 200.
 
 ### Positions
 
 `GET /api/positions?coname={name}` **PUBLIC**
-    * Body: returns a list of positions whose company name matches the given coname query parameter. Could be empty if a company does not have any positions available or the company does not exist.
-    * Status Code: always 200.
+* Body: returns a list of positions whose company name matches the given coname query parameter. Could be empty if a company does not have any positions available or the company does not exist.
+* Status Code: always 200.
 
 ### Authentication
 
