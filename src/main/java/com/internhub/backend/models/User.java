@@ -1,9 +1,12 @@
 package com.internhub.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "users")
+@JsonIgnoreProperties("password")
 public class User {
     @Id
     @GeneratedValue
