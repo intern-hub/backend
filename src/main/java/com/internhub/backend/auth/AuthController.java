@@ -27,13 +27,13 @@ public class AuthController {
     private static final String RESET_PASSWORD_LINK = "https://intern-hub.github.io/frontend/%s";
     private static final String FORGOT_PASSWORD_EMAIL =
             "<html><body>" +
-                    "Hello %s,\n\n" +
-                    "If you did <i>not</i> request a password reset, please ignore this message.\n\n" +
-                    "If you did, please visit <a href=\"%s\">the following link</a>.\n" +
+                    "Hello %s,<br/><br/>" +
+                    "If you did <i>not</i> request a password reset, please ignore this message.<br/><br/>" +
+                    "If you did, please visit <a href=\"%s\">the following link</a>.<br/>" +
                     "Upon clicking it, your password will be reset to <b>%s</b>." +
-                    "Make sure to change it once you log in.\n\n" +
-                    "Unable to access the above link? View it directly:\n%s\n\n" +
-                    "Sincerely," +
+                    "Make sure to change it once you log in.<br/><br/>" +
+                    "Unable to access the above link? View it directly:<br/>%s<br/><br/>" +
+                    "Sincerely,<br/>" +
                     "The InternHub team" +
                     "</body></html>";
 
