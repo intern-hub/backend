@@ -7,9 +7,12 @@ import com.internhub.backend.util.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.security.Principal;
 import java.security.SecureRandom;
 
@@ -25,7 +28,7 @@ public class AuthController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
-    public JavaMailSender emailSender;
+    private JavaMailSender emailSender;
 
     private SecureRandom secureRandom;
 
@@ -67,7 +70,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/password/forgot")
-    void forgotPassword(@RequestBody User forgotUser) {
+    void forgotPassword(@RequestBody User forgotUser) throws MessagingException {
         if (forgotUser.getUsername() == null || forgotUser.getEmail() == null) {
             throw new ForgotPasswordMalformedException();
         }
@@ -86,11 +89,14 @@ public class AuthController {
         repository.save(user);
 
         // Send email to the user with the contents of their new password
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Your new password is ready!");
-        message.setText(String.format(
-                "Your password has been changed to <b>%s</b>.\nMake sure to change it once you log in.",
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setFrom("internhub.notifier@yahoo.com");
+        helper.setTo(user.getEmail());
+        helper.setSubject("Your new password is ready!");
+        helper.setText(String.format(
+                "<html><body>Your password has been changed to <b>%s</b>.\n" +
+                "Make sure to change it once you log in.</body></html>",
                 newPassword
         ));
         emailSender.send(message);

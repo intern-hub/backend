@@ -43,7 +43,9 @@ dependencies {
     compile group: 'javax.activation', name: 'activation', version: '1.1.1'
     compile group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
     compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
+    compile group: 'org.springframework', name: 'spring-context'
     compile group: 'org.springframework', name: 'spring-context-support'
+    compile("org.springframework.boot:spring-boot-starter-mail")
 
     testCompile('org.springframework.boot:spring-boot-starter-temporary')
 

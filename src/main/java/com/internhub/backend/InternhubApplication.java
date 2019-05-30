@@ -22,24 +22,6 @@ public class InternhubApplication {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean
-	public JavaMailSender getJavaMailSender() {
-		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
-		mailSender.setHost("smtp.mail.yahoo.com");
-		mailSender.setPort(465);
-
-		mailSender.setUsername(System.getenv("INTERNHUB_EMAIL"));
-		mailSender.setPassword(System.getenv("INTERNHUB_EMAIL_PASSWORD"));
-
-		Properties props = mailSender.getJavaMailProperties();
-		props.put("mail.transport.protocol", "smtp");
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.debug", "true");
-
-		return mailSender;
-	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(InternhubApplication.class, args);
 	}
