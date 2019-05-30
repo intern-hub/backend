@@ -30,7 +30,7 @@ public class AuthController {
                     "Hello %s,<br/><br/>" +
                     "If you did <i>not</i> request a password reset, please ignore this message.<br/><br/>" +
                     "If you did, please visit <a href=\"%s\">the following link</a>.<br/>" +
-                    "Upon clicking it, your password will be reset to <b>%s</b>." +
+                    "Upon clicking it, your password will be reset to <b>%s</b>. " +
                     "Make sure to change it once you log in.<br/><br/>" +
                     "Unable to access the above link? View it directly:<br/>%s<br/><br/>" +
                     "Sincerely,<br/>" +
