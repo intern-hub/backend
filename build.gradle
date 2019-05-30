@@ -40,6 +40,9 @@ dependencies {
     compile 'io.springfox:springfox-swagger2:2.9.2'
     compile 'io.springfox:springfox-swagger-ui:2.9.2'
 
-    testCompile('org.springframework.boot:spring-boot-starter-test')
+    compile group: 'org.springframework', name: 'spring-context-support'
+    compile group: 'javax.mail', name: 'javax.mail-api', version: '1.6.2'
+
+    testCompile('org.springframework.boot:spring-boot-starter-temporary')
 
 }
