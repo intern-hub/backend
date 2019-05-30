@@ -23,8 +23,7 @@ public class AuthController {
     private static final String ALPHANUMERIC = RandomString.digits + "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
     private static final int MIN_TMP_PASSWORD_LENGTH = 8;
     private static final int MAX_TMP_PASSWORD_LENGTH = 16;
-    // TODO: Change link to something that is actually valid
-    private static final String RESET_PASSWORD_LINK = "https://intern-hub.github.io/frontend/%s";
+    private static final String RESET_PASSWORD_LINK = "https://intern-hub.github.io/frontend/#/frontend/reset-password/%s";
     private static final String FORGOT_PASSWORD_EMAIL =
             "<html><body>" +
                     "Hello %s,<br/><br/>" +
