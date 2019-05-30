@@ -18,7 +18,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
             SuggestionMalformedException.class,
             UserMalformedException.class,
             ForgotPasswordMalformedException.class,
-            ChangePasswordMalformedException.class
+            ChangePasswordMalformedException.class,
+            ResetPasswordMalformedException.class
     })
     public ResponseEntity<CustomErrorResponse> handleBadRequestException(Exception ex, WebRequest request) {
         CustomErrorResponse errors = new CustomErrorResponse();
@@ -32,7 +33,8 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
             ApplicationAccessDeniedException.class,
             SuggestionAccessDeniedException.class,
             ForgotPasswordAccessDeniedException.class,
-            ChangePasswordAccessDeniedException.class
+            ChangePasswordAccessDeniedException.class,
+            ResetPasswordAccessDeniedException.class
     })
     public ResponseEntity<CustomErrorResponse> handleAccessDeniedException(Exception ex, WebRequest request) {
         CustomErrorResponse errors = new CustomErrorResponse();
