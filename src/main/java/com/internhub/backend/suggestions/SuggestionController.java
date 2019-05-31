@@ -5,6 +5,7 @@ import com.internhub.backend.errors.exceptions.SuggestionAccessDeniedException;
 import com.internhub.backend.errors.exceptions.SuggestionMalformedException;
 import com.internhub.backend.errors.exceptions.SuggestionNotFoundException;
 import com.internhub.backend.models.Suggestion;
+import com.internhub.backend.models.temporary.Identification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,13 +40,16 @@ public class SuggestionController {
     }
 
     @PostMapping("/suggestions")
-    void createSuggestion(@RequestBody Suggestion suggestion, Principal principal) {
+    Identification createSuggestion(@RequestBody Suggestion suggestion, Principal principal) {
         if (suggestion.getContent() == null) {
             throw new SuggestionMalformedException();
         }
         String username = principal.getName();
         suggestion.setUser(userRepository.findByUsername(username));
         suggestionRepository.save(suggestion);
+        Identification suggestionId = new Identification();
+        suggestionId.setId(suggestion.getId());
+        return suggestionId;
     }
 
     @PutMapping("/suggestions/{id}")

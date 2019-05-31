@@ -10,6 +10,7 @@ import com.internhub.backend.models.Application;
 import com.internhub.backend.models.Company;
 import com.internhub.backend.models.Position;
 import com.internhub.backend.errors.exceptions.PositionNotFoundException;
+import com.internhub.backend.models.temporary.Identification;
 import com.internhub.backend.positions.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -64,7 +65,7 @@ public class ApplicationController {
     }
 
     @PostMapping("/applications")
-    void createApplication(@RequestBody Application application, Principal principal) {
+    Identification createApplication(@RequestBody Application application, Principal principal) {
         String username = principal.getName();
 
         // Application must include required fields
@@ -101,6 +102,10 @@ public class ApplicationController {
 
         application.setUser(userRepository.findByUsername(username));
         applicationRepository.save(application);
+
+        Identification applicationId = new Identification();
+        applicationId.setId(application.getId());
+        return applicationId;
     }
 
     @PutMapping("/applications/{id}")
