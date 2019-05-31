@@ -33,9 +33,13 @@ public class ApplicationController {
     @ResponseBody
     List<Application> getApplications(
             @RequestParam(name = "coname", required = false) String companyName,
+            @RequestParam(name = "posid", required = false) Long positionId,
             Principal principal
     ) {
         String username = principal.getName();
+        if (positionId != null) {
+            return applicationRepository.findByUserUsernameAndPositionId(username, positionId);
+        }
         if (companyName != null) {
             /*
              * TODO:
