@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.security.Principal;
-import java.security.SecureRandom;
 import java.util.UUID;
 
 @RestController
@@ -24,7 +23,7 @@ public class AuthController {
             "<html><body>" +
                     "Hello %s,<br/><br/>" +
                     "If you did <i>not</i> request a password reset, please ignore this message.<br/><br/>" +
-                    "If you did, please click <a href=\"%s\">here</a> to reset your password.<br/>" +
+                    "Otherwise, please click <a href=\"%s\">here</a> to reset your password.<br/><br/>" +
                     "Unable to access the above link? View it directly:<br/>%s<br/><br/>" +
                     "Sincerely,<br/>" +
                     "The InternHub team" +
@@ -36,12 +35,6 @@ public class AuthController {
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
     private JavaMailSender emailSender;
-
-    private SecureRandom secureRandom;
-
-    public AuthController() {
-        this.secureRandom = new SecureRandom();
-    }
 
     @GetMapping("/auth/me")
     @ResponseBody
@@ -123,9 +116,8 @@ public class AuthController {
             throw new ResetPasswordAccessDeniedException();
         }
 
-        // Move the reset password to their actual password field
-        // Remove the reset token and reset password fields
-        user.setPassword(resetBody.getNewPassword());
+        // Remove the reset token and set new password
+        user.setPassword(passwordEncoder.encode(resetBody.getNewPassword()));
         user.setResetToken(null);
         repository.save(user);
     }
