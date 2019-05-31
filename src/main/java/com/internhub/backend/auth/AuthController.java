@@ -4,7 +4,6 @@ import com.internhub.backend.errors.exceptions.*;
 import com.internhub.backend.models.User;
 import com.internhub.backend.models.temporary.ChangePassword;
 import com.internhub.backend.models.temporary.ResetPassword;
-import com.internhub.backend.util.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,17 +19,12 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class AuthController {
-    private static final String ALPHANUMERIC = RandomString.digits + "ACEFGHJKLMNPQRUVWXYabcdefhijkprstuvwx";
-    private static final int MIN_TMP_PASSWORD_LENGTH = 8;
-    private static final int MAX_TMP_PASSWORD_LENGTH = 16;
     private static final String RESET_PASSWORD_LINK = "https://intern-hub.github.io/frontend/#/frontend/reset-password/%s";
     private static final String FORGOT_PASSWORD_EMAIL =
             "<html><body>" +
                     "Hello %s,<br/><br/>" +
                     "If you did <i>not</i> request a password reset, please ignore this message.<br/><br/>" +
-                    "If you did, please visit <a href=\"%s\">the following link</a>.<br/>" +
-                    "Upon clicking it, your password will be reset to <b>%s</b>.<br/>" +
-                    "Make sure to change it once you log in.<br/><br/>" +
+                    "If you did, please click <a href=\"%s\">here</a> to reset your password.<br/>" +
                     "Unable to access the above link? View it directly:<br/>%s<br/><br/>" +
                     "Sincerely,<br/>" +
                     "The InternHub team" +
@@ -66,7 +60,6 @@ public class AuthController {
             throw new UserConflictException(username);
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setResetPassword(null);
         user.setResetToken(null);
         repository.save(user);
     }
@@ -81,7 +74,6 @@ public class AuthController {
             throw new ChangePasswordAccessDeniedException();
         }
         user.setPassword(passwordEncoder.encode(passwordChange.getNewPassword()));
-        user.setResetPassword(null);
         user.setResetToken(null);
         repository.save(user);
     }
@@ -97,19 +89,12 @@ public class AuthController {
             throw new ForgotPasswordAccessDeniedException();
         }
 
-        // Generate a new, securely random password for the user to use temporarily
-        // They will want to change this password once they log in
-        RandomString generator = new RandomString(MAX_TMP_PASSWORD_LENGTH, secureRandom, ALPHANUMERIC);
-        int passwordLength = secureRandom.nextInt(MAX_TMP_PASSWORD_LENGTH - MIN_TMP_PASSWORD_LENGTH + 1) + MIN_TMP_PASSWORD_LENGTH;
-        String newPassword = generator.nextString().substring(0, passwordLength);
-
         // Generate a token used to identify the user; they are required to verify
         // it for the password reset to take effect
         String token = UUID.randomUUID().toString();
         String tokenLink = String.format(RESET_PASSWORD_LINK, token);
 
         // Set the reset password and token
-        user.setResetPassword(passwordEncoder.encode(newPassword));
         user.setResetToken(token);
         repository.save(user);
 
@@ -120,9 +105,8 @@ public class AuthController {
         helper.setTo(user.getEmail());
         helper.setSubject("InternHub - Password Reset Requested");
         helper.setText(String.format(
-                FORGOT_PASSWORD_EMAIL,
-                user.getUsername(), tokenLink,
-                newPassword, tokenLink
+                FORGOT_PASSWORD_EMAIL, user.getUsername(),
+                tokenLink, tokenLink
         ), true);
         emailSender.send(message);
     }
@@ -141,8 +125,7 @@ public class AuthController {
 
         // Move the reset password to their actual password field
         // Remove the reset token and reset password fields
-        user.setPassword(user.getResetPassword());
-        user.setResetPassword(null);
+        user.setPassword(resetBody.getNewPassword());
         user.setResetToken(null);
         repository.save(user);
     }

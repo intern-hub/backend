@@ -22,9 +22,6 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "reset_token")
     private String resetToken;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(name = "reset_password")
-    private String resetPassword;
 
     public Long getId() {
         return id;
@@ -66,14 +63,5 @@ public class User {
 
     public void setResetToken(String resetToken) {
         this.resetToken = resetToken;
-    }
-
-    @JsonIgnore
-    public String getResetPassword() {
-        return resetPassword;
-    }
-
-    public void setResetPassword(String resetPassword) {
-        this.resetPassword = resetPassword;
     }
 }
