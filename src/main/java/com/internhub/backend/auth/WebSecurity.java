@@ -2,6 +2,7 @@ package com.internhub.backend.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -32,6 +33,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         authenticationFilter.setFilterProcessesUrl(JWTConstants.LOGIN_URL);
         final JWTAuthorizationFilter authorizationFilter = new JWTAuthorizationFilter(authenticationManager(), userRepository);
         http.cors().and().csrf().disable().authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, PRIVATE_ROUTES).permitAll()
                 .antMatchers(PRIVATE_ROUTES).authenticated()
                 .anyRequest().permitAll()
                 .and()
