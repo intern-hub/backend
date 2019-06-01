@@ -90,24 +90,24 @@ Please see below, specifically the Authentication section, for more detailed des
 
 | Component | Description |
 | ------------- | ------------- |
-| Response Body | | 
-| Status Code | | 
+| Response Body | Will return a list of applications belonging to the current user and for the given company. | 
+| Status Code | 403 if not authenticated, 404 if company not found, 200 otherwise. | 
 
 `POST /api/applications` **AUTHENTICATED**
 
 | Component | Description |
 | ------------- | ------------- |
-| Request Body | |
-| Response Body | | 
-| Status Code | | 
+| Request Body | A partially complete application model. Must contain `{ position: { id: ID }}` |
+| Response Body | Returns the ID of the created application. | 
+| Status Code | 400 if position key is missing, 403 if not authenticated, 404 if position does not exist, 409 if user already has an application for that position, 200 otherwise. | 
 
 `PUT /api/applications/{id}` **AUTHENTICATED**
 
 | Component | Description |
 | ------------- | ------------- |
-| Request Body | |
-| Response Body | | 
-| Status Code | | 
+| Request Body | A partially complete application model. |
+| Response Body | None. | 
+| Status Code | 404 if the application doesn't exist, 403 if not authenticated, 200 otherwise. | 
 
 -------------------------------------------------------------
 
@@ -117,8 +117,8 @@ Please see below, specifically the Authentication section, for more detailed des
 
 | Component | Description |
 | ------------- | ------------- |
-| Request Body | |
-| Response Body | | 
-| Status Code | | 
+| Request Body | Must contain `{ content: STRING }` (i.e. the suggestion the user has made) |
+| Response Body | Returns the ID of the created suggestion. | 
+| Status Code | 403 if not authenticated, 200 otherwise. | 
 
 -------------------------------------------------------------
