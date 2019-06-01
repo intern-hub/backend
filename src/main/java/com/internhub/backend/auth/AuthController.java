@@ -18,8 +18,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api")
 public class AuthController {
-    private static final String RESET_PASSWORD_LINK = "https://intern-hub.github.io/frontend/#/frontend/reset-password/%s";
-    private static final String FORGOT_PASSWORD_EMAIL =
+    private static final String RESET_PASSWORD_LINK =
+            "https://intern-hub.github.io/frontend/#/frontend/reset-password/%s";
+    private static final String FORGOT_PASSWORD_EMAIL_SENDER =
+            "internhub.notifier@yahoo.com";
+    private static final String FORGOT_PASSWORD_EMAIL_SUBJECT =
+            "InternHub - Password Reset Requested";
+    private static final String FORGOT_PASSWORD_EMAIL_TEMPLATE =
             "<html><body>" +
                     "Hello %s,<br/><br/>" +
                     "If you did <i>not</i> request a password reset, please ignore this message.<br/><br/>" +
@@ -94,11 +99,12 @@ public class AuthController {
         // Send email to the user with the contents of their new password
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom("internhub.notifier@yahoo.com");
+        helper.setFrom(FORGOT_PASSWORD_EMAIL_SENDER);
         helper.setTo(user.getEmail());
-        helper.setSubject("InternHub - Password Reset Requested");
+        helper.setSubject(FORGOT_PASSWORD_EMAIL_SUBJECT);
         helper.setText(String.format(
-                FORGOT_PASSWORD_EMAIL, user.getUsername(),
+                FORGOT_PASSWORD_EMAIL_TEMPLATE,
+                user.getUsername(),
                 tokenLink, tokenLink
         ), true);
         emailSender.send(message);
