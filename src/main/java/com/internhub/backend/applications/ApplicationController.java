@@ -94,7 +94,7 @@ public class ApplicationController {
         }
 
         // Increment the target company's popularity if on creation, we have applied to that company
-        Company company = application.getPosition().getCompany();
+        Company company = positionRepository.findById(positionId).get().getCompany();
         if (application.isApplied()) {
             company.setPopularity(company.getPopularity() + 1);
             companyRepository.save(company);
