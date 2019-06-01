@@ -34,8 +34,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         final JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManager());
         authenticationFilter.setFilterProcessesUrl(JWTConstants.LOGIN_URL);
         final JWTAuthorizationFilter authorizationFilter = new JWTAuthorizationFilter(authenticationManager(), userRepository);
-        http.cors().and().csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS).permitAll()
+        http.cors().and().authorizeRequests()
+                .antMatchers(HttpMethod.OPTIONS, PRIVATE_ROUTES).permitAll()
                 .antMatchers(PRIVATE_ROUTES).authenticated()
                 .anyRequest().permitAll()
                 .and()
@@ -52,16 +52,16 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		CorsConfiguration corsConfiguration = new CorsConfiguration();
+		CorsConfiguration corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
+		/*
 		corsConfiguration.addAllowedOrigin("*");
 		corsConfiguration.setAllowedMethods(Arrays.asList(
 				HttpMethod.GET.name(),
-				HttpMethod.HEAD.name(),
                 HttpMethod.OPTIONS.name(),
 				HttpMethod.POST.name(),
 				HttpMethod.PUT.name(),
 				HttpMethod.DELETE.name()));
-		corsConfiguration.setMaxAge(3600L);
+		*/
 		source.registerCorsConfiguration("/**", corsConfiguration);
 		return source;
     }
