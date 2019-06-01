@@ -50,7 +50,7 @@ public class AuthController {
         }
         String username = user.getUsername();
         if (repository.findByUsername(username) != null) {
-            throw new UserConflictException(username);
+            throw new UserConflictException();
         }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setResetToken(null);
