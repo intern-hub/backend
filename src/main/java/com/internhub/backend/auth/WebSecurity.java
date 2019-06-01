@@ -34,7 +34,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         final JWTAuthenticationFilter authenticationFilter = new JWTAuthenticationFilter(authenticationManager());
         authenticationFilter.setFilterProcessesUrl(JWTConstants.LOGIN_URL);
         final JWTAuthorizationFilter authorizationFilter = new JWTAuthorizationFilter(authenticationManager(), userRepository);
-        http.cors().and().authorizeRequests()
+        http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, PRIVATE_ROUTES).permitAll()
                 .antMatchers(PRIVATE_ROUTES).authenticated()
                 .anyRequest().permitAll()
