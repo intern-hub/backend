@@ -63,7 +63,7 @@ public class AuthController {
             throw new ChangePasswordMalformedException();
         }
         User user = repository.findByUsername(principal.getName());
-        if (!user.getPassword().equals(passwordEncoder.encode(passwordChange.getOldPassword()))) {
+        if (!passwordEncoder.matches(passwordChange.getOldPassword(), user.getPassword())) {
             throw new ChangePasswordAccessDeniedException();
         }
         user.setPassword(passwordEncoder.encode(passwordChange.getNewPassword()));
