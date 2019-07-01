@@ -42,3 +42,6 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+# Profile-specific application properties
+application-*.properties
